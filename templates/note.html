@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+    <form method="POST" action = "/add_note">
+      <div class = "form-group">
+        <label>Title</label>
+        <input type="text" name = "title">
+        <label>Content</label>
+        <input type="text" name = "content">
+      </div>
+      <input class="btn btn-primary" type="submit" value="submit">
+    </form>
+{% endblock %}
