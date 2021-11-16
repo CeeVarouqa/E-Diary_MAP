@@ -9,4 +9,7 @@
       </div>
       <input class="btn btn-primary" type="submit" value="submit">
     </form>
+    {% if error %}
+    <h6>{{ error }}</h6>
+    {% endif %}
 {% endblock %}

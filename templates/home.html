@@ -4,6 +4,16 @@
         <h2>{{ post.title }}</h2>
         <p>On {{ post.date_posted}}</p>
         <p>{{ post.content }}</p>
+        <form action="{{ url_for('delete_note') }}" method=post class=delete-note>
+          <input type=hidden value="{{ post.title }}" name=title />
+          <input class="btn btn-primary" type="submit" value="delete">
+        </form>
+        <br><br>
     {% endfor %}
     <a href="{{ url_for('add_note') }}">Add new note</a>
+    <br><br>
+{% endblock %}
+
+{% block scripts %}
+
 {% endblock %}
