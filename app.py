@@ -1,6 +1,8 @@
 import datetime
 from flask import Flask, render_template, request
 
+from posts import add_post
+
 app = Flask(__name__)
 
 app.config.from_pyfile('config.py')
@@ -38,8 +40,8 @@ def add_note():
             return render_template('note.html', error="Note with such title already exists")
         if title == "":
             return render_template('note.html', error="You should fill the title field")
-        posts.append({'id': len(posts), 'title': title, 'content': content, 'date_posted': datetime.datetime.now().date()})
-        return render_template('home.html', posts=posts)
+        new_posts = add_post(posts, id=len(posts), title=title, content=content, date_posted=datetime.datetime.now().date())
+        return render_template('home.html', posts=new_posts)
     return render_template('note.html')
 
 
