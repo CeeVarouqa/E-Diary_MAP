@@ -18,7 +18,23 @@ posts = [
         'title': 'Note 2',
         'content': 'Second note',
         'date_posted': '2021-10-15'
-    }
+    },
+]
+trackers = [
+    {
+        'title': 'Tracker 1',
+        'days': [
+            {'title': '1', 'completed': False},
+            {'title': '2', 'completed': False},
+        ],
+    },
+    {
+        'title': 'Tracker 2',
+        'days': [
+            {'title': '1', 'completed': False},
+            {'title': '2', 'completed': False},
+        ],
+    },
 ]
 
 
@@ -54,4 +70,9 @@ def delete_note():
                 posts.remove(post)
                 break
         return render_template('home.html', posts=posts)
+
+
+@app.route('/habit_trackers', methods=['GET'])
+def habit_trackers():
+    return render_template('trackers.html', trackers=trackers)
 

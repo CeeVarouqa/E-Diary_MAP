@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% for tracker in trackers %}
+        <h2>{{ tracker.title }}</h2>
+        {% for day in tracker.days %}
+        <input type="checkbox" class="day">
+        <label for="day">{{day.title}}</label>
+        {% endfor %}
+        <br><br>
+    {% endfor %}
+    <br><br>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}
