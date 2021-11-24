@@ -1,6 +1,7 @@
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from app import app, resources, models, db
+from flask import render_template
 
 api = Api(app)
 
@@ -34,6 +35,12 @@ def check_if_token_in_blacklist(decrypted_token):
 @app.before_first_request
 def create_tables():
     db.create_all()
+
+
+@app.route('/api/docs')
+def get_docs():
+    print('sending docs')
+    return render_template('swaggerui.html')
 
 
 if __name__ == '__main__':
