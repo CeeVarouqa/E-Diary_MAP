@@ -39,7 +39,6 @@ def create_tables():
 
 @app.route('/api/docs')
 def get_docs():
-    print('sending docs')
     return render_template('swaggerui.html')
 
 
