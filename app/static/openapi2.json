@@ -126,6 +126,16 @@
               "type": "string",
               "example": "my body"
             }
+          },
+          {
+            "in": "query",
+            "name": "photo url",
+            "required": true,
+            "description": "Photo",
+            "schema": {
+              "type": "string",
+              "example": ""
+            }
           }
         ],
         "responses": {
