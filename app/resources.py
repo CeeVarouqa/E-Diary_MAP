@@ -26,6 +26,10 @@ note_edit_parser.add_argument('body')
 
 class UserRegistration(Resource):
     def post(self):
+        """
+        Registration API
+        :return: message and access & refresh tokens for success registration
+        """
         data = auth_parser.parse_args()
         access_token_expiration_time = timedelta(days=1)
         refresh_token_expiration_time = timedelta(days=1)
@@ -53,6 +57,10 @@ class UserRegistration(Resource):
 
 class UserLogin(Resource):
     def post(self):
+        """
+        Login API
+        :return: message and access & refresh tokens for success login
+        """
         data = auth_parser.parse_args()
         access_token_expiration_time = timedelta(minutes=15)
         refresh_token_expiration_time = timedelta(days=1)
@@ -76,6 +84,10 @@ class UserLogin(Resource):
 class UserLogoutAccess(Resource):
     @jwt_required
     def post(self):
+        """
+        Logout API
+        :return: message
+        """
         jti = get_raw_jwt()['jti']
         try:
             revoked_token = models.RevokedTokenModel(jti=jti)
@@ -86,8 +98,15 @@ class UserLogoutAccess(Resource):
 
 
 class Note(Resource):
+    """
+    APIs for working with notes
+    """
     @jwt_required
     def post(self):
+        """
+        API for creating new note
+        :return: message
+        """
         data = note_download_parser.parse_args()
         current_user = models.UserModel.find_by_username(get_jwt_identity())
 
@@ -112,6 +131,10 @@ class Note(Resource):
 
     @jwt_required
     def get(self):
+        """
+        API for getting note by id, date or all notes
+        :return: notes that correspond to the request
+        """
         note_id = note_id_parser.parse_args()['id']
         date = note_date_parser.parse_args()['date']
         if note_id:
@@ -136,6 +159,10 @@ class Note(Resource):
 
     @jwt_required
     def delete(self):
+        """
+        API for deleting note by id
+        :return: message
+        """
         note_id = note_id_parser.parse_args()['id']
         current_user = models.UserModel.find_by_username(get_jwt_identity())
         if current_user.id == models.NoteModel.find_by_ids(note_id).user_id:
@@ -145,6 +172,12 @@ class Note(Resource):
 
     @jwt_required
     def patch(self):
+        """
+        API for editing note
+        params: id, title, body
+        Depending on arguments, title or/and body will be edited for the note with specified id
+        :return: message
+        """
         note_id = note_id_parser.parse_args()['id']
         current_user = models.UserModel.find_by_username(get_jwt_identity())
         title = note_edit_parser.parse_args()['title']
