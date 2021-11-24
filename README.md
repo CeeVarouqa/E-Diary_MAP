@@ -20,4 +20,12 @@ This project is an electronic diary. The purpose of this application is to serve
 
 
 
-### 
+### Project First Setup
+1. Create virtual environment
+`python3 -m venv .venv`
+2. Activate venv
+`. .venv/bin/activate`
+3. Install all libraries
+`pip install -r requirements.txt`
+4. `export FLASK_APP=run`
+5. `flask run`
