@@ -10,7 +10,7 @@ from werkzeug.utils import secure_filename
 
 api = Api(app)
 
-UPLOAD_FOLDER = 'static/uploads/'
+UPLOAD_FOLDER = 'app/static/uploads/'
 
 
 # map urls with functions
@@ -55,11 +55,15 @@ def get_docs():
     return render_template('swaggerui.html')
 
 
+
+
+
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 	
+
 @app.route('/')
 def upload_form():
 	return render_template('upload.html')
@@ -87,6 +91,7 @@ def upload_image():
 def display_image(filename):
 	#print('display_image filename: ' + filename)
 	return redirect(url_for('static', filename='uploads/' + filename), code=301)
+
 
 
 if __name__ == '__main__':
