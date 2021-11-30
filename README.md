@@ -29,3 +29,8 @@ This project is an electronic diary. The purpose of this application is to serve
 `pip install -r requirements.txt`
 4. `export FLASK_APP=run`
 5. `flask run`
+
+
+### API documentation
+1. Set up the project
+2. Go to /api/docs
