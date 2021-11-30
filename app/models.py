@@ -99,7 +99,7 @@ class NoteModel(db.Model):
     title = db.Column(db.String(30), nullable=False)
     body = db.Column(db.String(300), nullable=False)
     datetime = db.Column(db.String(30), nullable=True)
-    edited = db.Column(db.Integer, nullable=False)
+    edited = db.Column(db.Boolean, nullable=False)
 
     def add(self):
         """
