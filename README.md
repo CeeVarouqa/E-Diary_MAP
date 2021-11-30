@@ -36,4 +36,4 @@ This project is an electronic diary. The purpose of this application is to serve
 2. Go to /api/docs
 
 ### Tests
-To run test just run `pytest`
+To run tests just run `pytest`
