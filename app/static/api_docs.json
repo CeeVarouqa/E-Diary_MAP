@@ -1,0 +1,278 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Ediary API",
+    "description": "An API for diary app"
+  },
+  "paths": {
+    "/registration": {
+      "post": {
+        "tags": [
+          "Registration"
+        ],
+        "description": "Registration API",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "username",
+            "required": true,
+            "description": "User login",
+            "schema": {
+              "type": "string",
+              "example": "Alina"
+            }
+          },
+          {
+            "in": "query",
+            "name": "password",
+            "required": true,
+            "description": "User password",
+            "schema": {
+              "type": "string",
+              "example": "*****"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": {
+                    "message": "User Alina was created",
+                    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2Mzc3NjIxNzksIm5iZiI6MTYzNzc2MjE3OSwianRpIjoiZjFlNTNiNmMtNzliOS00ODY3LTlmMzgtZTJmYTI3MmFjYjMzIiwiZXhwIjoxNjM3ODQ4NTc5LCJpZGVudGl0eSI6IkFsaW5hIiwiZnJlc2giOmZhbHNlLCJ0eXBlIjoiYWNjZXNzIn0.x69_ABHGDZEgwOR7ZlTWGOkxFqOFQQ-WFTXchQ89DEo",
+                    "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2Mzc3NjIxNzksIm5iZiI6MTYzNzc2MjE3OSwianRpIjoiY2QyNDk4MjItNjdmMS00MDEwLWFkYjMtYWI3YzZkMTBiZTQyIiwiZXhwIjoxNjM3ODQ4NTc5LCJpZGVudGl0eSI6IkFsaW5hIiwidHlwZSI6InJlZnJlc2gifQ.BeHzWf4EnAy6pT8rFkwb2mHuSMBRmDgq1etPrGAzgLI"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Login"
+        ],
+        "description": "Login API",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "username",
+            "required": true,
+            "description": "User login",
+            "schema": {
+              "type": "string",
+              "example": "Alina"
+            }
+          },
+          {
+            "in": "query",
+            "name": "password",
+            "required": true,
+            "description": "User password",
+            "schema": {
+              "type": "string",
+              "example": "*****"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": {
+                    "message": "Logged in as Alina,",
+                    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2Mzc3NjIxNzksIm5iZiI6MTYzNzc2MjE3OSwianRpIjoiZjFlNTNiNmMtNzliOS00ODY3LTlmMzgtZTJmYTI3MmFjYjMzIiwiZXhwIjoxNjM3ODQ4NTc5LCJpZGVudGl0eSI6IkFsaW5hIiwiZnJlc2giOmZhbHNlLCJ0eXBlIjoiYWNjZXNzIn0.x69_ABHGDZEgwOR7ZlTWGOkxFqOFQQ-WFTXchQ89DEo",
+                    "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2Mzc3NjIxNzksIm5iZiI6MTYzNzc2MjE3OSwianRpIjoiY2QyNDk4MjItNjdmMS00MDEwLWFkYjMtYWI3YzZkMTBiZTQyIiwiZXhwIjoxNjM3ODQ4NTc5LCJpZGVudGl0eSI6IkFsaW5hIiwidHlwZSI6InJlZnJlc2gifQ.BeHzWf4EnAy6pT8rFkwb2mHuSMBRmDgq1etPrGAzgLI"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts": {
+      "post": {
+        "tags": [
+          "Posts"
+        ],
+        "description": "API for creating new note",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "title",
+            "required": true,
+            "description": "Note title",
+            "schema": {
+              "type": "string",
+              "example": "my title"
+            }
+          },
+          {
+            "in": "query",
+            "name": "body",
+            "required": true,
+            "description": "Note body",
+            "schema": {
+              "type": "string",
+              "example": "my body"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": {
+                    "message": "Note with name \"my title\" was successfully saved for user Alina"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "description": "API for getting note by id, date or all notes",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": false,
+            "description": "Note id",
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "in": "query",
+            "name": "date",
+            "required": false,
+            "description": "Note date",
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": {
+                    "message": "Alina's notes: id: 1 title: my title body: my body datetime: '2021-11-24 17:20:22.244819' edited: 0"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Posts"
+        ],
+        "description": "API for deleting note by id",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "description": "Note id",
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": {
+                    "message": "Note was successfully deleted"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Posts"
+        ],
+        "description": "API for editing note",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "description": "Note id",
+            "schema": {
+              "type": "string",
+              "example": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "title",
+            "required": false,
+            "description": "Note title",
+            "schema": {
+              "type": "string",
+              "example": "new title"
+            }
+          },
+          {
+            "in": "query",
+            "name": "body",
+            "required": false,
+            "description": "Note body",
+            "schema": {
+              "type": "string",
+              "example": "new body"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": {
+                    "message": "Note was successfully edited"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
