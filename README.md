@@ -34,3 +34,6 @@ This project is an electronic diary. The purpose of this application is to serve
 ### API documentation
 1. Set up the project
 2. Go to /api/docs
+
+### Tests
+To run test just run `pytest`
