@@ -1,3 +1,5 @@
+import base64
+
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from app import app, resources, models, db
@@ -5,9 +7,9 @@ import os
 from flask import flash, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 
-api = Api(app)
+from app.models import FileContent
 
-UPLOAD_FOLDER = 'app/static/uploads/'
+api = Api(app)
 
 # map urls with functions
 api.add_resource(resources.UserRegistration, '/registration')
@@ -26,10 +28,6 @@ app.config['JWT_SECRET_KEY'] = 'kjgh234jht4h5hgkh'
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 app.config['UPLOAD_FOLDER'] = 'app/static/uploads'
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-app.secret_key = "secret key"
 
 # work with tokens
 jwt = JWTManager(app)
@@ -51,42 +49,44 @@ def get_docs():
     return render_template('swaggerui.html')
 
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+def render_picture(data):
+    render_pic = base64.b64encode(data).decode('ascii')
+    return render_pic
 
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+@app.route('/upload', methods=['POST'])
+def upload():
+    file = request.files['inputFile']
+    data = file.read()
+    render_file = render_picture(data)
+    user_name = request.form['username']
+
+    newFile = FileContent(name=file.filename, data=data, rendered_data=render_file, user_name=user_name)
+    db.session.add(newFile)
+    db.session.commit()
+
+    flash(f'Pic {newFile.name}')
+
+    return render_template('upload.html', data=list, image=base64.b64encode(newFile.data).decode('ascii'))
 
 
+# Index It routes to index.html where the upload forms is
+@app.route('/index', methods=['GET', 'POST'])
 @app.route('/')
-def upload_form():
-    return render_template('upload.html')
+def index():
+    return render_template('index.html')
 
 
-@app.route('/', methods=['POST'])
-def upload_image():
-    if 'file' not in request.files:
-        flash('No file part')
-        return redirect(request.url)
-    file = request.files['file']
-    if file.filename == '':
-        flash('No image selected for uploading')
-        return redirect(request.url)
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        # print('upload_image filename: ' + filename)
-        flash('Image successfully uploaded and displayed below')
-        return render_template('upload.html', filename=filename)
-    else:
-        flash('Allowed image types are -> png, jpg, jpeg, gif')
-        return redirect(request.url)
+@app.route('/get', methods=['GET', 'POST'])
+def get():
+    return render_template('get.html')
 
 
-@app.route('/display/<filename>')
-def display_image(filename):
-    # print('display_image filename: ' + filename)
-    return redirect(url_for('static', filename='uploads/' + filename), code=301)
+@app.route('/image', methods=['GET', 'POST'] )
+def image():
+    file_data = FileContent.query.filter_by(user_name='test1').first()
+    image = base64.b64encode(file_data.data).decode('ascii')
+    return render_template('upload.html', data=list, image=image)
 
 
 if __name__ == '__main__':

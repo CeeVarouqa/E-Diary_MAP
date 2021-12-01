@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from passlib.hash import pbkdf2_sha256 as sha256
 from app import db
 
@@ -34,6 +36,7 @@ class UserModel(db.Model):
         function to get all users from db
         :return:
         """
+
         def to_json(x):
             """
             transfers User to json format
@@ -126,6 +129,7 @@ class NoteModel(db.Model):
         :param username: username of the user
         :return: Notes objects
         """
+
         def to_json(x):
             return {
                 'id': x.id,
@@ -138,7 +142,8 @@ class NoteModel(db.Model):
         user_id = UserModel.find_by_username(username).id
         return {
             "{}'s notes for {}".format(username, date): list(
-                map(lambda x: to_json(x), db.session.query(cls).filter(cls.datetime.contains(date), cls.user_id == user_id).all())
+                map(lambda x: to_json(x),
+                    db.session.query(cls).filter(cls.datetime.contains(date), cls.user_id == user_id).all())
             )
         }
 
@@ -149,6 +154,7 @@ class NoteModel(db.Model):
         :param username: username of the user
         :return: Notes objects
         """
+
         def to_json(x):
             return {
                 'id': x.id,
@@ -187,7 +193,27 @@ class NoteModel(db.Model):
         :param text: if new note text is specified then the old one will be replaced by it
         :return: message
         """
-        db.session.query(cls).filter(cls.id == id).\
+        db.session.query(cls).filter(cls.id == id). \
             update({'title': title, 'body': text, 'edited': 1})
         db.session.commit()
         return {'message': 'Note was successfully edited'}
+
+# Picture table. By default the table name is filecontent
+
+
+class FileContent(db.Model):
+    """
+    The first time the app runs you need to create the table. In Python
+    terminal import db, Then run db.create_all()
+    """
+    """ ___tablename__ = 'yourchoice' """  # You can override the default table name
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_name = db.Column(db.String(128), nullable=False)
+    name = db.Column(db.String(128), nullable=False)
+    data = db.Column(db.LargeBinary, nullable=False)  # Actual data, needed for Download
+    rendered_data = db.Column(db.Text, nullable=False)  # Data to render the pic in browser
+    pic_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'Pic Name: {self.name} Data: {self.data} '
