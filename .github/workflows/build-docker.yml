@@ -30,7 +30,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g'))"
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g')"
         id: extract_branch
       - name: Build and push
         id: docker_build
