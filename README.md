@@ -37,3 +37,8 @@ This project is an electronic diary. The purpose of this application is to serve
 
 ### Tests
 To run tests just run `pytest`
+
+### Github Actions checks:
+1. Docker Image
+2. runs tests.py
+3. PRs
