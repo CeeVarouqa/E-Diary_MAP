@@ -1,5 +1,7 @@
+import json
 from datetime import datetime
 
+from flask import jsonify
 from passlib.hash import pbkdf2_sha256 as sha256
 from app import db
 
@@ -217,3 +219,93 @@ class FileContent(db.Model):
 
     def __repr__(self):
         return f'Pic Name: {self.name} Data: {self.data} '
+
+
+class HabitModel(db.Model):
+    __tablename__ = 'habits'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False, name='user_id')
+    title = db.Column(db.String(30), nullable=False)
+    datetime = db.Column(db.String(30), nullable=False)
+    completed = db.Column(db.Text, nullable=False)
+
+    def add(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def find_by_creation_date(cls, date, username):
+        def to_json(x):
+            return {
+                'id': x.id,
+                'title': x.title,
+                'datetime': x.datetime,
+                'completed': x.completed
+            }
+
+        user_id = UserModel.find_by_username(username).id
+        return {
+            "{}'s created habits for {}".format(username, date): list(
+                map(lambda x: to_json(x),
+                    db.session.query(cls).filter(cls.datetime.contains(date), cls.user_id == user_id).all())
+            )
+        }
+
+    @classmethod
+    def find_by_completion_date(cls, date, username):
+        def to_json(x):
+            return {
+                'id': x.id,
+                'title': x.title,
+                'datetime': x.datetime,
+                'completed': x.completed
+            }
+
+        user_id = UserModel.find_by_username(username).id
+        habits = []
+        for habit in db.session.query(cls).filter(cls.user_id == user_id).all():
+            completed = json.loads(habit.completed)
+            if date in completed:
+                habits.append(to_json(habit))
+
+        jsonify(habits)
+
+        return {
+            "{}'s completed habits for {}".format(username, date): habits
+        }
+
+    @classmethod
+    def find_by_ids(cls, habit_id):
+        return db.session.query(cls).filter(cls.id == habit_id).first()
+
+    @classmethod
+    def return_all(cls, username):
+        def to_json(x):
+            return {
+                'id': x.id,
+                'title': x.title,
+                'datetime': x.datetime,
+                'completed': x.completed
+            }
+
+        user_id = UserModel.find_by_username(username).id
+
+        return {
+            "{}'s habits".format(username): list(
+                map(lambda x: to_json(x), db.session.query(cls).filter(cls.user_id == user_id).all())
+            )
+        }
+
+    @classmethod
+    def add_completed_date(cls, habit_id, date):
+        db.session.query(cls).filter(cls.id == habit_id).update({'completed': date})
+        db.session.commit()
+        return {'message': 'Habit was completed'}
+
+    @classmethod
+    def delete_habit(cls, habit_id):
+        habit = db.session.query(cls).filter(cls.id == habit_id).first()
+        db.session.delete(habit)
+        db.session.commit()
+        return {'message': 'Habit was successfully deleted'}
