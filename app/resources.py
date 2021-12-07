@@ -79,7 +79,7 @@ class UserLogin(Resource):
         current_user = models.UserModel.find_by_username(data['username'])
 
         if not current_user:
-            return {"message': 'User {} doesn't exist".format(data['username'])}
+            return {"message": "User {} doesn't exist".format(data['username'])}
 
         if models.UserModel.verify_hash(data['password'], current_user.password):
             access_token = create_access_token(identity=data['username'], expires_delta=access_token_expiration_time)
@@ -213,7 +213,7 @@ class Habit(Resource):
         current_user = models.UserModel.find_by_username(get_jwt_identity())
 
         if not habit_title:
-            return {'message' : 'No habit was found'}
+            return {'message': 'No habit was found'}
 
         new_habit = models.HabitModel(
             user_id=current_user.id,
@@ -224,8 +224,10 @@ class Habit(Resource):
         new_habit.add()
 
         return {
-            'message': 'Habit with name "{}" was successfully saved for user {}'.format(habit_title,
-                                                                                       current_user.username)
+            'message': 'Habit with name "{}" was successfully saved for user {}'.format(
+                habit_title,
+                current_user.username
+            )
         }
 
     @jwt_required
@@ -239,7 +241,6 @@ class Habit(Resource):
             return models.HabitModel.find_by_completion_date(completion, models.UserModel.find_by_username(get_jwt_identity()).username)
         else:
             return models.HabitModel.return_all(models.UserModel.find_by_username(get_jwt_identity()).username)
-
 
     @jwt_required
     def patch(self):
