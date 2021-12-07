@@ -19,6 +19,7 @@ api.add_resource(resources.UserLogoutRefresh, '/logout/refresh')
 api.add_resource(resources.TokenRefresh, '/token/refresh')
 api.add_resource(resources.AllUsers, '/users')
 api.add_resource(resources.Note, '/posts')
+api.add_resource(resources.Habit, '/habits')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///images.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
