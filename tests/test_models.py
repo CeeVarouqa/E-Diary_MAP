@@ -2,10 +2,11 @@ import json
 import os
 import sys
 
-from app import models
-
 topdir = os.path.join(os.path.dirname(__file__), "..")
 sys.path.append(topdir)
+
+from app import models
+from datetime import datetime, timedelta
 
 
 def test_user():
