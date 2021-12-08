@@ -1,3 +1,7 @@
+import json
+from datetime import datetime
+
+from flask import jsonify
 from passlib.hash import pbkdf2_sha256 as sha256
 from app import db
 
@@ -34,6 +38,7 @@ class UserModel(db.Model):
         function to get all users from db
         :return:
         """
+
         def to_json(x):
             """
             transfers User to json format
@@ -127,6 +132,7 @@ class NoteModel(db.Model):
         :param username: username of the user
         :return: Notes objects
         """
+
         def to_json(x):
             return {
                 'id': x.id,
@@ -138,15 +144,12 @@ class NoteModel(db.Model):
 
         user_id = UserModel.find_by_username(username).id
         return {
-            "{}'s notes for {}".format(
-                username,
-                date): list(
-                map(
-                    lambda x: to_json(x),
-                    db.session.query(cls).filter(
-                        cls.datetime.contains(date),
-                        cls.user_id == user_id).all()))}
-
+            "{}'s notes for {}".format(username, date): list(
+                map(lambda x: to_json(x),
+                    db.session.query(cls).filter(cls.datetime.contains(date), cls.user_id == user_id).all())
+            )
+        }
+      
     @classmethod
     def return_all(cls, username):
         """
@@ -154,6 +157,7 @@ class NoteModel(db.Model):
         :param username: username of the user
         :return: Notes objects
         """
+
         def to_json(x):
             return {
                 'id': x.id,
@@ -189,7 +193,117 @@ class NoteModel(db.Model):
         :param text: if new note text is specified then the old one will be replaced by it
         :return: message
         """
-        db.session.query(cls).filter(cls.id == id).\
+        db.session.query(cls).filter(cls.id == id). \
             update({'title': title, 'body': text, 'edited': 1})
         db.session.commit()
         return {'message': 'Note was successfully edited'}
+
+# Picture table. By default the table name is filecontent
+
+
+class FileContent(db.Model):
+    """
+    The first time the app runs you need to create the table. In Python
+    terminal import db, Then run db.create_all()
+    """
+    """ ___tablename__ = 'yourchoice' """  # You can override the default table name
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_name = db.Column(db.String(128), nullable=False)
+    name = db.Column(db.String(128), nullable=False)
+    data = db.Column(db.LargeBinary, nullable=False)  # Actual data, needed for Download
+    rendered_data = db.Column(db.Text, nullable=False)  # Data to render the pic in browser
+    pic_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'Pic Name: {self.name} Data: {self.data} '
+
+
+class HabitModel(db.Model):
+    __tablename__ = 'habits'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False, name='user_id')
+    title = db.Column(db.String(30), nullable=False)
+    datetime = db.Column(db.String(30), nullable=False)
+    completed = db.Column(db.Text, nullable=False)
+
+    def add(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def find_by_creation_date(cls, date, username):
+        def to_json(x):
+            return {
+                'id': x.id,
+                'title': x.title,
+                'datetime': x.datetime,
+                'completed': x.completed
+            }
+
+        user_id = UserModel.find_by_username(username).id
+        return {
+            "{}'s created habits for {}".format(username, date): list(
+                map(lambda x: to_json(x),
+                    db.session.query(cls).filter(cls.datetime.contains(date), cls.user_id == user_id).all())
+            )
+        }
+
+    @classmethod
+    def find_by_completion_date(cls, date, username):
+        def to_json(x):
+            return {
+                'id': x.id,
+                'title': x.title,
+                'datetime': x.datetime,
+                'completed': x.completed
+            }
+
+        user_id = UserModel.find_by_username(username).id
+        habits = []
+        for habit in db.session.query(cls).filter(cls.user_id == user_id).all():
+            completed = json.loads(habit.completed)
+            if date in completed:
+                habits.append(to_json(habit))
+
+        jsonify(habits)
+
+        return {
+            "{}'s completed habits for {}".format(username, date): habits
+        }
+
+    @classmethod
+    def find_by_ids(cls, habit_id):
+        return db.session.query(cls).filter(cls.id == habit_id).first()
+
+    @classmethod
+    def return_all(cls, username):
+        def to_json(x):
+            return {
+                'id': x.id,
+                'title': x.title,
+                'datetime': x.datetime,
+                'completed': x.completed
+            }
+
+        user_id = UserModel.find_by_username(username).id
+
+        return {
+            "{}'s habits".format(username): list(
+                map(lambda x: to_json(x), db.session.query(cls).filter(cls.user_id == user_id).all())
+            )
+        }
+
+    @classmethod
+    def add_completed_date(cls, habit_id, date):
+        db.session.query(cls).filter(cls.id == habit_id).update({'completed': date})
+        db.session.commit()
+        return {'message': 'Habit was completed'}
+
+    @classmethod
+    def delete_habit(cls, habit_id):
+        habit = db.session.query(cls).filter(cls.id == habit_id).first()
+        db.session.delete(habit)
+        db.session.commit()
+        return {'message': 'Habit was successfully deleted'}

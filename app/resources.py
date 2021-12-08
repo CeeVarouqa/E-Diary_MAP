@@ -1,3 +1,5 @@
+import json
+
 from flask_restful import Resource, reqparse
 from datetime import timedelta
 from app import models
@@ -39,6 +41,16 @@ note_id_parser.add_argument('id', help='This field cannot be blank')
 note_edit_parser = reqparse.RequestParser()
 note_edit_parser.add_argument('title')
 note_edit_parser.add_argument('body')
+
+habit_download_parser = reqparse.RequestParser()
+habit_download_parser.add_argument('title', help='This field cannot be blank', required=True)
+
+habit_complete_parser = reqparse.RequestParser()
+habit_complete_parser.add_argument('id', help='This field cannot be blank', required=True)
+
+habit_get_parser = reqparse.RequestParser()
+habit_get_parser.add_argument('creation_date')
+habit_get_parser.add_argument('completion_date')
 
 
 class UserRegistration(Resource):
@@ -90,18 +102,11 @@ class UserLogin(Resource):
         current_user = models.UserModel.find_by_username(data['username'])
 
         if not current_user:
-            return {
-                "message': 'User {} doesn't exist".format(
-                    data['username'])}
+            return {"message": "User {} doesn't exist".format(data['username'])}
 
-        if models.UserModel.verify_hash(
-                data['password'], current_user.password):
-            access_token = create_access_token(
-                identity=data['username'],
-                expires_delta=access_token_expiration_time)
-            refresh_token = create_refresh_token(
-                identity=data['username'],
-                expires_delta=refresh_token_expiration_time)
+        if models.UserModel.verify_hash(data['password'], current_user.password):
+            access_token = create_access_token(identity=data['username'], expires_delta=access_token_expiration_time)
+            refresh_token = create_refresh_token(identity=data['username'], expires_delta=refresh_token_expiration_time)
             return {
                 'message': 'Logged in as {}'.format(current_user.username),
                 'access_token': access_token,
@@ -226,6 +231,71 @@ class Note(Resource):
             if not text:
                 text = note.body
             return models.NoteModel.edit_note(note_id, title, text)
+        else:
+            return 'Permission denied .!.'
+
+
+class Habit(Resource):
+    @jwt_required
+    def post(self):
+        habit_title = habit_download_parser.parse_args()['title']
+        current_user = models.UserModel.find_by_username(get_jwt_identity())
+
+        if not habit_title:
+            return {'message': 'No habit was found'}
+
+        new_habit = models.HabitModel(
+            user_id=current_user.id,
+            title=habit_title,
+            datetime=str(datetime.now()),
+            completed=json.dumps([])
+        )
+        new_habit.add()
+
+        return {
+            'message': 'Habit with name "{}" was successfully saved for user {}'.format(
+                habit_title,
+                current_user.username
+            )
+        }
+
+    @jwt_required
+    def get(self):
+        creation = habit_get_parser.parse_args()['creation_date']
+        completion = habit_get_parser.parse_args()['completion_date']
+
+        if creation:
+            return models.HabitModel.find_by_creation_date(creation, models.UserModel.find_by_username(get_jwt_identity()).username)
+        elif completion:
+            return models.HabitModel.find_by_completion_date(completion, models.UserModel.find_by_username(get_jwt_identity()).username)
+        else:
+            return models.HabitModel.return_all(models.UserModel.find_by_username(get_jwt_identity()).username)
+
+    @jwt_required
+    def patch(self):
+        habit_id = habit_complete_parser.parse_args()['id']
+        current_user = models.UserModel.find_by_username(get_jwt_identity())
+
+        if current_user.id == models.HabitModel.find_by_ids(habit_id).user_id:
+            habit = models.HabitModel.find_by_ids(habit_id)
+            list = json.loads(habit.completed)
+            date = str(datetime.now().date())
+            if date in list:
+                list.remove(date)
+            else:
+                list.append(date)
+            completed = json.dumps(list)
+            return models.HabitModel.add_completed_date(habit_id, completed)
+        else:
+            return 'Permission denied .!.'
+
+    @jwt_required
+    def delete(self):
+        habit_id = habit_complete_parser.parse_args()['id']
+        current_user = models.UserModel.find_by_username(get_jwt_identity())
+
+        if current_user.id == models.HabitModel.find_by_ids(habit_id).user_id:
+            return models.HabitModel.delete_habit(habit_id)
         else:
             return 'Permission denied .!.'
 
