@@ -45,7 +45,8 @@ class UserModel(db.Model):
                 'password': x.password
             }
 
-        return {'users': list(map(lambda x: to_json(x), UserModel.query.all()))}
+        return {'users': list(
+            map(lambda x: to_json(x), UserModel.query.all()))}
 
     @staticmethod
     def generate_hash(password):
@@ -137,10 +138,14 @@ class NoteModel(db.Model):
 
         user_id = UserModel.find_by_username(username).id
         return {
-            "{}'s notes for {}".format(username, date): list(
-                map(lambda x: to_json(x), db.session.query(cls).filter(cls.datetime.contains(date), cls.user_id == user_id).all())
-            )
-        }
+            "{}'s notes for {}".format(
+                username,
+                date): list(
+                map(
+                    lambda x: to_json(x),
+                    db.session.query(cls).filter(
+                        cls.datetime.contains(date),
+                        cls.user_id == user_id).all()))}
 
     @classmethod
     def return_all(cls, username):
@@ -160,11 +165,8 @@ class NoteModel(db.Model):
 
         user_id = UserModel.find_by_username(username).id
 
-        return {
-            "{}'s notes".format(username): list(
-                map(lambda x: to_json(x), db.session.query(cls).filter(cls.user_id == user_id).all())
-            )
-        }
+        return {"{}'s notes".format(username): list(map(lambda x: to_json(
+            x), db.session.query(cls).filter(cls.user_id == user_id).all()))}
 
     @classmethod
     def delete_note(cls, id):

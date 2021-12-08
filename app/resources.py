@@ -2,16 +2,33 @@ from flask_restful import Resource, reqparse
 from datetime import timedelta
 from app import models
 from datetime import datetime
-from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required,
-                                jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    jwt_required,
+    jwt_refresh_token_required,
+    get_jwt_identity,
+    get_raw_jwt)
 
 auth_parser = reqparse.RequestParser()
-auth_parser.add_argument('username', help='This field cannot be blank', required=True)
-auth_parser.add_argument('password', help='This field cannot be blank', required=True)
+auth_parser.add_argument(
+    'username',
+    help='This field cannot be blank',
+    required=True)
+auth_parser.add_argument(
+    'password',
+    help='This field cannot be blank',
+    required=True)
 
 note_download_parser = reqparse.RequestParser()
-note_download_parser.add_argument('title', help='This field cannot be blank', required=True)
-note_download_parser.add_argument('body', help='This field cannot be blank', required=True)
+note_download_parser.add_argument(
+    'title',
+    help='This field cannot be blank',
+    required=True)
+note_download_parser.add_argument(
+    'body',
+    help='This field cannot be blank',
+    required=True)
 
 note_date_parser = reqparse.RequestParser()
 note_date_parser.add_argument('date', help='This field cannot be blank')
@@ -35,7 +52,9 @@ class UserRegistration(Resource):
         refresh_token_expiration_time = timedelta(days=1)
 
         if models.UserModel.find_by_username(data['username']):
-            return {'message': 'User {} already exists'.format(data['username'])}
+            return {
+                'message': 'User {} already exists'.format(
+                    data['username'])}
 
         new_user = models.UserModel(
             username=data['username'],
@@ -44,14 +63,18 @@ class UserRegistration(Resource):
 
         try:
             new_user.save_to_db()
-            access_token = create_access_token(identity=data['username'], expires_delta=access_token_expiration_time)
-            refresh_token = create_refresh_token(identity=data['username'], expires_delta=refresh_token_expiration_time)
+            access_token = create_access_token(
+                identity=data['username'],
+                expires_delta=access_token_expiration_time)
+            refresh_token = create_refresh_token(
+                identity=data['username'],
+                expires_delta=refresh_token_expiration_time)
             return {
                 'message': 'User {} was created'.format(data['username']),
                 'access_token': access_token,
                 'refresh_token': refresh_token
             }
-        except:
+        except BaseException:
             return {'message': 'Something went wrong'}, 500
 
 
@@ -67,16 +90,23 @@ class UserLogin(Resource):
         current_user = models.UserModel.find_by_username(data['username'])
 
         if not current_user:
-            return {"message': 'User {} doesn't exist".format(data['username'])}
+            return {
+                "message': 'User {} doesn't exist".format(
+                    data['username'])}
 
-        if models.UserModel.verify_hash(data['password'], current_user.password):
-            access_token = create_access_token(identity=data['username'], expires_delta=access_token_expiration_time)
-            refresh_token = create_refresh_token(identity=data['username'], expires_delta=refresh_token_expiration_time)
+        if models.UserModel.verify_hash(
+                data['password'], current_user.password):
+            access_token = create_access_token(
+                identity=data['username'],
+                expires_delta=access_token_expiration_time)
+            refresh_token = create_refresh_token(
+                identity=data['username'],
+                expires_delta=refresh_token_expiration_time)
             return {
                 'message': 'Logged in as {}'.format(current_user.username),
                 'access_token': access_token,
                 'refresh_token': refresh_token
-                }
+            }
         else:
             return {'message': 'Wrong credentials'}
 
@@ -93,7 +123,7 @@ class UserLogoutAccess(Resource):
             revoked_token = models.RevokedTokenModel(jti=jti)
             revoked_token.add()
             return {'message': 'Access token has been revoked'}
-        except:
+        except BaseException:
             return {'message': 'Something went wrong'}, 500
 
 
@@ -126,8 +156,9 @@ class Note(Resource):
         new_note.add()
 
         return {
-            'message': 'Note with name "{}" was successfully saved for user {}'.format(note_title, current_user.username)
-        }
+            'message': 'Note with name "{}" was successfully saved for user {}'.format(
+                note_title,
+                current_user.username)}
 
     @jwt_required
     def get(self):
@@ -139,7 +170,8 @@ class Note(Resource):
         date = note_date_parser.parse_args()['date']
         if note_id:
             note = models.NoteModel.find_by_ids(note_id)
-            current_user = models.UserModel.find_by_username(get_jwt_identity())
+            current_user = models.UserModel.find_by_username(
+                get_jwt_identity())
 
             if current_user.id == note.user_id:
                 return {
@@ -153,9 +185,13 @@ class Note(Resource):
                 return 'Permission denied .!.'
         elif date:
 
-            return models.NoteModel.find_by_date(date, models.UserModel.find_by_username(get_jwt_identity()).username)
+            return models.NoteModel.find_by_date(
+                date, models.UserModel.find_by_username(
+                    get_jwt_identity()).username)
         else:
-            return models.NoteModel.return_all(models.UserModel.find_by_username(get_jwt_identity()).username)
+            return models.NoteModel.return_all(
+                models.UserModel.find_by_username(
+                    get_jwt_identity()).username)
 
     @jwt_required
     def delete(self):
@@ -202,7 +238,7 @@ class UserLogoutRefresh(Resource):
             revoked_token = models.RevokedTokenModel(jti=jti)
             revoked_token.add()
             return {'message': 'Refresh token has been revoked'}
-        except:
+        except BaseException:
             return {'message': 'Something went wrong'}, 500
 
 
@@ -220,4 +256,3 @@ class AllUsers(Resource):
 
     def delete(self):
         return models.UserModel.delete_all()
-
