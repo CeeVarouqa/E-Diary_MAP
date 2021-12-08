@@ -144,12 +144,15 @@ class NoteModel(db.Model):
 
         user_id = UserModel.find_by_username(username).id
         return {
-            "{}'s notes for {}".format(username, date): list(
-                map(lambda x: to_json(x),
-                    db.session.query(cls).filter(cls.datetime.contains(date), cls.user_id == user_id).all())
-            )
-        }
-      
+            "{}'s notes for {}".format(
+                username,
+                date): list(
+                map(
+                    lambda x: to_json(x),
+                    db.session.query(cls).filter(
+                        cls.datetime.contains(date),
+                        cls.user_id == user_id).all()))}
+
     @classmethod
     def return_all(cls, username):
         """
@@ -211,8 +214,10 @@ class FileContent(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.String(128), nullable=False)
     name = db.Column(db.String(128), nullable=False)
-    data = db.Column(db.LargeBinary, nullable=False)  # Actual data, needed for Download
-    rendered_data = db.Column(db.Text, nullable=False)  # Data to render the pic in browser
+    # Actual data, needed for Download
+    data = db.Column(db.LargeBinary, nullable=False)
+    # Data to render the pic in browser
+    rendered_data = db.Column(db.Text, nullable=False)
     pic_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
@@ -244,11 +249,14 @@ class HabitModel(db.Model):
 
         user_id = UserModel.find_by_username(username).id
         return {
-            "{}'s created habits for {}".format(username, date): list(
-                map(lambda x: to_json(x),
-                    db.session.query(cls).filter(cls.datetime.contains(date), cls.user_id == user_id).all())
-            )
-        }
+            "{}'s created habits for {}".format(
+                username,
+                date): list(
+                map(
+                    lambda x: to_json(x),
+                    db.session.query(cls).filter(
+                        cls.datetime.contains(date),
+                        cls.user_id == user_id).all()))}
 
     @classmethod
     def find_by_completion_date(cls, date, username):
@@ -262,7 +270,8 @@ class HabitModel(db.Model):
 
         user_id = UserModel.find_by_username(username).id
         habits = []
-        for habit in db.session.query(cls).filter(cls.user_id == user_id).all():
+        for habit in db.session.query(cls).filter(
+                cls.user_id == user_id).all():
             completed = json.loads(habit.completed)
             if date in completed:
                 habits.append(to_json(habit))
@@ -289,15 +298,13 @@ class HabitModel(db.Model):
 
         user_id = UserModel.find_by_username(username).id
 
-        return {
-            "{}'s habits".format(username): list(
-                map(lambda x: to_json(x), db.session.query(cls).filter(cls.user_id == user_id).all())
-            )
-        }
+        return {"{}'s habits".format(username): list(map(lambda x: to_json(
+            x), db.session.query(cls).filter(cls.user_id == user_id).all()))}
 
     @classmethod
     def add_completed_date(cls, habit_id, date):
-        db.session.query(cls).filter(cls.id == habit_id).update({'completed': date})
+        db.session.query(cls).filter(
+            cls.id == habit_id).update({'completed': date})
         db.session.commit()
         return {'message': 'Habit was completed'}
 
