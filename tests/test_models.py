@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+from app import models
 import json
 import os
 import sys
@@ -5,8 +7,6 @@ import sys
 topdir = os.path.join(os.path.dirname(__file__), "..")
 sys.path.append(topdir)
 
-from app import models
-from datetime import datetime, timedelta
 
 def test_add_Habit():
     """
