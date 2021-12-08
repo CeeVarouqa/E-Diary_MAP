@@ -1,3 +1,4 @@
+[![codecov](https://codecov.io/gh/CeeVarouqa/E-Diary_MAP/branch/main/graph/badge.svg?token=X973M7CA6F)](https://codecov.io/gh/CeeVarouqa/E-Diary_MAP)
 ## E-Diary and Habit Tracker
 
 This project is an electronic diary. The purpose of this application is to serve as a modern diary: it is always with the user and can be accessed from anywhere. The notes should be secure and and accessed only by one's personal account. This e-diary can include several features. It should provide a user ability to create habit trackers and reminders for the users that they need to perform a habit they track. 
