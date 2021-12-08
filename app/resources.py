@@ -43,10 +43,14 @@ note_edit_parser.add_argument('title')
 note_edit_parser.add_argument('body')
 
 habit_download_parser = reqparse.RequestParser()
-habit_download_parser.add_argument('title', help='This field cannot be blank', required=True)
+habit_download_parser.add_argument(
+    'title',
+    help='This field cannot be blank',
+    required=True)
 
 habit_complete_parser = reqparse.RequestParser()
-habit_complete_parser.add_argument('id', help='This field cannot be blank', required=True)
+habit_complete_parser.add_argument(
+    'id', help='This field cannot be blank', required=True)
 
 habit_get_parser = reqparse.RequestParser()
 habit_get_parser.add_argument('creation_date')
@@ -102,11 +106,18 @@ class UserLogin(Resource):
         current_user = models.UserModel.find_by_username(data['username'])
 
         if not current_user:
-            return {"message": "User {} doesn't exist".format(data['username'])}
+            return {
+                "message": "User {} doesn't exist".format(
+                    data['username'])}
 
-        if models.UserModel.verify_hash(data['password'], current_user.password):
-            access_token = create_access_token(identity=data['username'], expires_delta=access_token_expiration_time)
-            refresh_token = create_refresh_token(identity=data['username'], expires_delta=refresh_token_expiration_time)
+        if models.UserModel.verify_hash(
+                data['password'], current_user.password):
+            access_token = create_access_token(
+                identity=data['username'],
+                expires_delta=access_token_expiration_time)
+            refresh_token = create_refresh_token(
+                identity=data['username'],
+                expires_delta=refresh_token_expiration_time)
             return {
                 'message': 'Logged in as {}'.format(current_user.username),
                 'access_token': access_token,
@@ -255,9 +266,7 @@ class Habit(Resource):
         return {
             'message': 'Habit with name "{}" was successfully saved for user {}'.format(
                 habit_title,
-                current_user.username
-            )
-        }
+                current_user.username)}
 
     @jwt_required
     def get(self):
@@ -265,11 +274,17 @@ class Habit(Resource):
         completion = habit_get_parser.parse_args()['completion_date']
 
         if creation:
-            return models.HabitModel.find_by_creation_date(creation, models.UserModel.find_by_username(get_jwt_identity()).username)
+            return models.HabitModel.find_by_creation_date(
+                creation, models.UserModel.find_by_username(
+                    get_jwt_identity()).username)
         elif completion:
-            return models.HabitModel.find_by_completion_date(completion, models.UserModel.find_by_username(get_jwt_identity()).username)
+            return models.HabitModel.find_by_completion_date(
+                completion, models.UserModel.find_by_username(
+                    get_jwt_identity()).username)
         else:
-            return models.HabitModel.return_all(models.UserModel.find_by_username(get_jwt_identity()).username)
+            return models.HabitModel.return_all(
+                models.UserModel.find_by_username(
+                    get_jwt_identity()).username)
 
     @jwt_required
     def patch(self):

@@ -62,12 +62,20 @@ def upload():
     render_file = render_picture(data)
     user_name = request.form['username']
 
-    newFile = FileContent(name=file.filename, data=data, rendered_data=render_file, user_name=user_name)
+    newFile = FileContent(
+        name=file.filename,
+        data=data,
+        rendered_data=render_file,
+        user_name=user_name)
     db.session.add(newFile)
     db.session.commit()
     flash(f'Pic {newFile.name}')
 
-    return render_template('upload.html', data=list, image=base64.b64encode(newFile.data).decode('ascii'))
+    return render_template(
+        'upload.html',
+        data=list,
+        image=base64.b64encode(
+            newFile.data).decode('ascii'))
 
 
 # Index It routes to index.html where the upload forms is
@@ -82,7 +90,7 @@ def get():
     return render_template('get.html')
 
 
-@app.route('/image', methods=['GET', 'POST'] )
+@app.route('/image', methods=['GET', 'POST'])
 def image():
     file_data = FileContent.query.filter_by(user_name='test1').first()
     image = base64.b64encode(file_data.data).decode('ascii')
