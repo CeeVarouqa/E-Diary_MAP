@@ -17,6 +17,8 @@ This project is an electronic diary. The purpose of this application is to serve
 
 **Backend:** python with Flask, Restful API
 
+**Tests:** PyTest
+
 **User Interface:** Figma
 
 
@@ -28,11 +30,20 @@ This project is an electronic diary. The purpose of this application is to serve
 `. .venv/bin/activate`
 3. Install all libraries
 `pip install -r requirements.txt`
-4. `export FLASK_APP=run`
-5. `flask run`
+4. Export Flask application `export FLASK_APP=run`
+5. Run it `flask run`
 
 
 ### API documentation
+For API documentation we set up Swagger.
+
+Below you can see the documentation for some of our methods:
+![image](https://user-images.githubusercontent.com/54363667/145612634-164c4f9b-a3c2-4dd9-af41-43540805ae21.png)
+![image](https://user-images.githubusercontent.com/54363667/145612747-85aad773-c0dc-42e3-87f9-c4fa1fe66771.png)
+![image](https://user-images.githubusercontent.com/54363667/145612851-ae56963b-61fa-47a4-8683-376a4a5b324d.png)
+![image](https://user-images.githubusercontent.com/54363667/145612975-bd313fa2-8d50-4c65-b283-8159847b70a3.png)
+
+To see full api documentation with usage examples do the following:
 1. Set up the project
 2. Go to /api/docs
 
