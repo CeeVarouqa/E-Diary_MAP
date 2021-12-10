@@ -3,7 +3,21 @@
 
 This project is an electronic diary. The purpose of this application is to serve as a modern diary: it is always with the user and can be accessed from anywhere. The notes should be secure and and accessed only by one's personal account. This e-diary can include several features. It should provide a user ability to create habit trackers and reminders for the users that they need to perform a habit they track. 
 
+The purpose of this applications is to replace simple paper based diaries, as they lack couple of very important features and this can be solved very easily using electronic diaries. Let's give more information about features and why they are important:
+1) **Ability to access from multiple devices**
+    It is impossible to carry your diary with you always. So this feature can create considerable advantage of e-diary over traditional ones.
+2)   **Security and privacy**
+    It is obvious that traditional diaries does not have any security options except hiding them in someplace, or putting easily breakable locks, which only increases interest to break it. On the other hand, e-diaries can have very high security qualities using only classical ciphering and cryptography methods.
+4)   **Editing notes**
+    This can be done in traditional diaries if you use pencil and eraser. But it is very uncomfortable and not very effective if you edit multiple times, which can be done very easily in ediary
+5)   **Habit tracker**
+    Probably possible if you draw tables by hand. But automated habit tracking looks and feels better, probably more motivating too.
+7) **Reminders and sharing progress**
+    No way you can do this effectively in paper diaries.
+8) **UI/UX**
+    This is obvious win by e-diary vs multiple lines of paper diary
 
+This arguments helped us to create user stories. And most functional requirements are based on this intentions.
 
 ### **Module View of the System:**
 
