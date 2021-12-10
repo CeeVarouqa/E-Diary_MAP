@@ -41,6 +41,11 @@ To run tests just run `pytest`
 1. We have added unit tests for the backend. tests are written in Python.
 2. We also have test coverage, you can see the label on the top of the read me. test coverage was done using codecov.io
 
+Example of code cov in our tests, and how percentage got smaller when we removed some test:
+
+![image](https://user-images.githubusercontent.com/42468193/145602890-cb4a9988-f28a-45d2-b78d-b58383f13edd.png)
+
+
 ### Github Actions checks:
 1. Docker Image 
 2. runs tests.py (checks tests)
