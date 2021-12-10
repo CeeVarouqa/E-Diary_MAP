@@ -38,13 +38,13 @@ This project is an electronic diary. The purpose of this application is to serve
 
 ### Tests
 To run tests just run `pytest`
+1. We have added unit tests for the backend. tests are written in Python.
+2. We also have test coverage, you can see the label on the top of the read me. test coverage was done using codecov.io
 
 ### Github Actions checks:
 1. Docker Image 
 2. runs tests.py (checks tests)
 3. PRs
 
-### Tests:
-1. We have added unit tests for the backend. tests are written in Python.
-2. We also have test coverage, you can see the label on the top of the read me. test coverage was done using codecov.io
+
 
