@@ -51,5 +51,7 @@ Example of code cov in our tests, and how percentage got smaller when we removed
 2. runs tests.py (checks tests)
 3. PRs
 
+Example of Action checks: 
+![image](https://user-images.githubusercontent.com/42468193/145603390-9914cba2-cd30-4e3e-8d9c-0b97c46379b5.png)
 
 
